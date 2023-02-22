@@ -6,7 +6,7 @@
 
    Greater than:
 
-   ![K-maps](https://github.com/GlebEG/digital-electronics-1/blob/main/labs/02-logic/p.PNG)
+   ![K-maps](https://github.com/GlebEG/digital-electronics-1/blob/main/labs/02-logic/BgA.jpg)
 
    Less than:
 
