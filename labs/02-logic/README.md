@@ -1,4 +1,4 @@
-# Lab 2: Gleb Egorov
+# Lab 2: Gleb Egorov ID238528
 
 ### 2-bit comparator
 
