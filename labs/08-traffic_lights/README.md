@@ -14,13 +14,10 @@
     p_traffic_fsm : process(clk) is
     begin
         if (rising_edge(clk)) then
-           if (rst = '1') then                    -- Synchronous reset
-            sig_state <= WEST_STOP;              -- Init state
-            sig_cnt   <= (others => '0');        -- Clear delay counter
+           if (rst = '1') then                    
+            sig_state <= WEST_STOP;              
+            sig_cnt   <= (others => '0');        
         elsif (sig_en = '1') then
-        -- Every 250 ms, CASE checks the value of sig_state
-        -- local signal and changes to the next state 
-        -- according to the delay value.
         case sig_state is
 
           when WEST_STOP =>
