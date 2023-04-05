@@ -1,4 +1,4 @@
-# Lab 8: Eorov Gleb 238528
+# Lab 8: Egorov Gleb 238528
 
 ### Traffic light controller
 
