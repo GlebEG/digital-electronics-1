@@ -44,7 +44,7 @@ begin
     )
     port map (
       clk => CLK100MHZ, 
-      rst => '0',     
+      rst => BTNC,     
       ce  => sig_clk_1ns 
     );
 
@@ -75,9 +75,11 @@ begin
           sig_pause_en <= '0';
           if (sig_timer_12bit = "111111111111") then
             sig_state <= PAUSE;
+            
             sig_rounds_6bit <= sig_rounds_6bit + 1;
           end if;
         when PAUSE =>
+           BTNC <='0';
           sig_timer_en <= '0';
           sig_pause_en <= '1';
           if (sig_pause_12bit = "111111111111") then
