@@ -61,6 +61,17 @@ begin
       cnt    => sig_timer_12bit 
     );
     
+    cnt_pause : entity work.cnt_up_down
+    generic map (
+      g_CNT_WIDTH => 12    -- Counter width (12 bits)
+    )
+    port map (
+      clk    => sig_clk_1ns,        
+      rst    => sig_pause_rst,              
+      en     => sig_pause_en,       
+      cnt_up => '1',              
+      cnt    => sig_pause_12bit    
+    );
 
 p_pause_cycle : process (sig_clk_1ns) is
 begin
