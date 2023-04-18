@@ -9,6 +9,8 @@ entity top is
     CLK100MHZ               : in  std_logic;      
     SW                      : in  std_logic;   
     BTNC                    : in  std_logic;  
+    sig_pause_rst           : in  std_logic;
+    sig_timer_rst           : in  std_logic;
     sig_timer_12bit_O       : out std_logic_vector(11 downto 0); 
     sig_rounds_6bit_O       : out std_logic_vector(5 downto 0);   
     sig_pause_12bit_O       : out std_logic_vector(11 downto 0);
@@ -29,8 +31,11 @@ architecture behavioral of top is
   signal sig_clk_1ns : std_logic;
   
 type t_state is (
+    START,
     COUNTER,
-    PAUSE
+    PAUSE,
+    TEST,
+    FINISH
 );
 
   signal sig_state : t_state;
@@ -55,7 +60,7 @@ begin
     )
     port map (
       clk    => sig_clk_1ns,       -- Main clock input
-      rst    => BTNC,              
+      rst    => sig_timer_rst,              
       en     => sig_timer_en,
       cnt_up => '1',              
       cnt    => sig_timer_12bit 
@@ -77,25 +82,54 @@ p_pause_cycle : process (sig_clk_1ns) is
 begin
   if (rising_edge(sig_clk_1ns)) then
     if (BTNC = '1') then                   
-      sig_state             <= COUNTER;              
+      sig_state             <= START;              
       sig_rounds_6bit       <= "000000";         
     elsif (SW = '1') then
       case sig_state is
+        
+        when START=>
+          BTNC <= '0';
+          sig_timer_en <= '0';
+          sig_pause_en <= '0';
+          sig_state <= COUNTER;
+        
         when COUNTER =>
           sig_timer_en <= '1';
           sig_pause_en <= '0';
           if (sig_timer_12bit = "111111111111") then
             sig_state <= PAUSE;
-            
-            sig_rounds_6bit <= sig_rounds_6bit + 1;
+            sig_timer_rst <= '1';
           end if;
+        
         when PAUSE =>
-           BTNC <='0';
+          sig_timer_rst <= '0';
+
           sig_timer_en <= '0';
           sig_pause_en <= '1';
           if (sig_pause_12bit = "111111111111") then
-            sig_state <= COUNTER;
-            end if;
+            sig_state <= TEST;
+            sig_pause_rst<= '1';
+          end if;
+        
+        when TEST =>
+          sig_timer_rst<= '0';
+          sig_pause_rst<= '0';
+          sig_timer_en <= '0';
+          sig_pause_en <= '0';
+        if (sig_rounds_6bit = "111111") then
+            sig_state <= FINISH;
+        else
+           sig_rounds_6bit <= sig_rounds_6bit + 1;
+           sig_state    <= COUNTER;
+
+        end if;
+        
+        when FINISH =>
+          BTNC <= '1';
+          
+        
+        
+        
       end case;
     end if;
   end if; 
